@@ -1,16 +1,16 @@
-import express from "express";
+import express from 'express';
 import {
   useAuthAuthMiddleware,
   useFakeAuthAuthMiddleware,
-} from "./middleware/auth.middleware";
-import { useSessionMiddleware } from "./middleware/session.middleware";
-import bodyParser from "body-parser";
+} from './middleware/auth.middleware';
+import { useSessionMiddleware } from './middleware/session.middleware';
+import bodyParser from 'body-parser';
 
-require("dotenv").config();
+require('dotenv').config();
 
 const app = express();
 
-app.set("view engine", "pug");
+app.set('view engine', 'pug');
 
 addBodyParser();
 
@@ -27,11 +27,11 @@ app.listen({ port: process.env.PORT }, () => {
 function addBodyParser() {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
-  app.use(require("cookie-parser")());
+  app.use(require('cookie-parser')());
 }
 
 function applyMiddleWare() {
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     app.use(useFakeAuthAuthMiddleware);
   } else {
     app.use(useAuthAuthMiddleware);
@@ -39,12 +39,12 @@ function applyMiddleWare() {
 }
 
 function addHTTPMethods() {
-  app.get("/login", (req, res, next) => {
+  app.get('/login', (req, res, next) => {
     if (!req.session?.user) {
       req.session.user = {
-        username: "ankitpant",
-        displayName: "Ankit Pant",
-        email: "ankit12.pant@gmail.com",
+        username: 'ankitpant',
+        displayName: 'Ankit Pant',
+        email: 'ankit12.pant@gmail.com',
       };
     }
     res.status(200).json({
@@ -53,21 +53,24 @@ function addHTTPMethods() {
     });
   });
 
-  // app.get("/index", function (req, res) {
-  //   res.render("index", { title: "Hey", message: "Hello there!" });
-  // });
+  app.get('/', function (req, res) {
+    res.render('index', {
+      title: 'express-sessions-redis',
+      message: 'Managing Node.js - Express Sessions with Redis',
+    });
+  });
 
-  app.get("/welcome", (req, res, next) => {
+  app.get('/welcome', (req, res, next) => {
     if (!req.session?.user) {
-      res.status(401).json({ message: "invalid users" });
+      res.status(401).json({ message: 'invalid users' });
       return;
     }
     res
       .status(200)
-      .json({ default: "Hello from the NodeJs app", session: req.session });
+      .json({ default: 'Hello from the NodeJs app', session: req.session });
   });
 
-  app.get("/logout", (req, res, next) => {
+  app.get('/logout', (req, res, next) => {
     delete req.session;
     return res.redirect(process.env.LOGOUT_URL);
   });
