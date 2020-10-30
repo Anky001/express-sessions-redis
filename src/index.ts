@@ -1,8 +1,6 @@
 import express from 'express';
-import {
-  useAuthAuthMiddleware,
-  useFakeAuthAuthMiddleware,
-} from './middleware/auth.middleware';
+import { useAuthAuthMiddleware } from './middleware/auth.middleware';
+import { useFakeAuthAuthMiddleware } from './middleware/fake-auth.middleware';
 import { useSessionMiddleware } from './middleware/session.middleware';
 import bodyParser from 'body-parser';
 import { addRoutes } from './routes/routes';
