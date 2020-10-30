@@ -7,6 +7,7 @@ export async function addRoutes(app) {
         email: 'ankit12.pant@gmail.com',
       };
     }
+
     res.status(200).json({
       maxAge: req.session.cookie.maxAge,
       expiresIn: req.session.cookie.maxAge / 1000,
@@ -14,9 +15,17 @@ export async function addRoutes(app) {
   });
 
   app.get('/', function (req, res) {
+    if (!req.session?.user) {
+      res
+        .status(401)
+        .json({ message: 'No Session found in the store, please login first' });
+      return;
+    }
+
     res.render('index', {
       title: 'express-sessions-redis',
-      message: 'Managing Node.js - Express Sessions with Redis',
+      message: 'Node.js',
+      description: 'Express Sessions with Redis',
     });
   });
 
@@ -25,6 +34,7 @@ export async function addRoutes(app) {
       res.status(401).json({ message: 'invalid users' });
       return;
     }
+
     res
       .status(200)
       .json({ default: 'Hello from the NodeJs app', session: req.session });
