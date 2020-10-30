@@ -14,6 +14,10 @@ Run `yarn start` for a dev server. Navigate to `http://localhost:8080/`. The app
 
 Run `yarn build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
+## Accessing static resources
+
+http://localhost:<port>/assets/icons/nodejs.svg
+
 ## Running unit tests
 
 @Todo
