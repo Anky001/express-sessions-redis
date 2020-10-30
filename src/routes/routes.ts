@@ -14,26 +14,20 @@ export async function addRoutes(app) {
     });
   });
 
-  app.get('/', function (req, res) {
-    if (!req.session?.user) {
-      res
-        .status(401)
-        .json({ message: 'No Session found in the store, please login first' });
-      return;
-    }
+  app.get('/', async (req, res) => {
+    // await checkUserSession(req, res);
 
     res.render('index', {
       title: 'express-sessions-redis',
-      message: 'Node.js',
-      description: 'Express Sessions with Redis',
+      message: 'Express Sessions with Redis',
+      description: !req.session?.user
+        ? 'No Session found in the store, please login first.'
+        : 'Please go to Welcome Route to see the session details!',
     });
   });
 
-  app.get('/welcome', (req, res, next) => {
-    if (!req.session?.user) {
-      res.status(401).json({ message: 'invalid users' });
-      return;
-    }
+  app.get('/welcome', async (req, res, next) => {
+    await checkUserSession(req, res);
 
     res
       .status(200)
@@ -44,4 +38,14 @@ export async function addRoutes(app) {
     delete req.session;
     return res.redirect(process.env.LOGOUT_URL);
   });
+}
+
+function checkUserSession(req, res): Promise<boolean> {
+  if (!req.session?.user) {
+    res
+      .status(401)
+      .json({ message: 'No Session found in the store, please login first' });
+    return;
+  }
+  Promise.resolve(true);
 }
